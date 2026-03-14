@@ -1,0 +1,68 @@
+/* 1. ALL IMPORTS MUST BE AT THE TOP */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+@import "tailwindcss";
+
+/* 2. ROOT VARIABLES */
+:root {
+  /* Brand Colors */
+  --primary-blue: #224c87;
+  --accent-red: #da3832;
+  --neutral-grey: #919090;
+  
+  /* System Colors */
+  --background: #ffffff;
+  --foreground: #333333;
+}
+
+/* 3. TAILWIND THEME EXTENSIONS */
+@theme inline {
+  --color-primary-blue: var(--primary-blue);
+  --color-accent-red: var(--accent-red);
+  --color-neutral-grey: var(--neutral-grey);
+  --font-montserrat: 'Montserrat', sans-serif;
+  --font-verdana: 'Verdana', sans-serif;
+}
+
+/* 4. GLOBAL STYLES */
+body {
+  background-color: #f9fafb;
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif; /* Body Text: Arial */
+  margin: 0;
+  padding: 0;
+}
+
+/* Heading Typography: Montserrat */
+h1, h2, h3, h4 {
+  font-family: 'Montserrat', sans-serif !important;
+  color: var(--primary-blue);
+}
+
+/* Input & Label Typography: Verdana */
+label, input, select, button, p, span {
+  font-family: 'Verdana', sans-serif !important;
+}
+
+/* Minimalist Input Styling */
+input[type="number"] {
+  background: transparent;
+  transition: border-color 0.2s ease;
+}
+
+input[type="number"]:focus {
+  border-color: var(--primary-blue);
+  outline: none;
+}
+
+/* Layout Elements */
+.card-layout {
+  background: white;
+  border-radius: 1.5rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+}
+
+/* Disclaimer Footer Style */
+footer {
+  background-color: #f1f1f1;
+  border-top: 1px solid #e5e7eb;
+}

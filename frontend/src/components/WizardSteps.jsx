@@ -80,25 +80,48 @@ export const Step2BasicInfo = ({ state, updateState }) => {
 // --- STEP 3: LIFESTYLE ---
 export const Step3Lifestyle = ({ state, updateState }) => {
   const lifestyles = [
-    { id: 'simple', title: 'Simple', desc: 'Basic needs and minimal discretionary spending.' },
-    { id: 'comfortable', title: 'Comfortable', desc: 'Balanced lifestyle with regular leisure.' },
-    { id: 'luxury', title: 'Luxury', desc: 'Premium services and high-end experiences.' }
+    { id: "simple", title: "Simple", desc: "Basic needs and minimal discretionary spending." },
+    { id: "comfortable", title: "Comfortable", desc: "Balanced lifestyle with regular leisure." },
+    { id: "luxury", title: "Luxury", desc: "Premium services and high-end experiences." },
   ];
+
   return (
     <div className="space-y-8 animate-in fade-in">
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-[#224c87] font-montserrat">Lifestyle Preference</h2>
+        <h2 className="text-2xl font-bold text-[#224c87] font-montserrat">
+          Lifestyle Preference
+        </h2>
       </div>
+
       <div className="max-w-md mx-auto space-y-4">
-        {lifestyles.map((l) => (
-          <label key={l.id} className={cn("flex items-start p-4 border-2 rounded-xl cursor-pointer transition-all", state.lifestyle === l.id ? "border-[#224c87] bg-blue-50" : "border-gray-100")}>
-            <input type="radio" className="mt-1.5 h-4 w-4 accent-[#224c87]" checked={state.lifestyle === l.id} onChange={() => updateState({ lifestyle: l.id })} />
-            <div className="ml-4">
-              <span className="block font-bold text-[#224c87] font-montserrat">{l.title}</span>
-              <span className="text-xs text-[#919090] font-verdana">{l.desc}</span>
-            </div>
-          </label>
-        ))}
+        {lifestyles.map((l) => {
+          const isSelected = state.lifestyle === l.id;
+
+          return (
+            <button
+              key={l.id}
+              onClick={() =>
+                updateState({
+                  lifestyle: l.id,
+                  inflation:
+                    l.id === "simple"
+                      ? 5
+                      : l.id === "comfortable"
+                      ? 6
+                      : 8,
+                })
+              }
+              className={`w-full p-4 rounded-xl border-2 text-left transition ${
+                isSelected
+                  ? "border-[#224c87] bg-blue-50"
+                  : "border-gray-100 bg-white"
+              }`}
+            >
+              <h3 className="font-bold text-[#224c87]">{l.title}</h3>
+              <p className="text-xs text-gray-500">{l.desc}</p>
+            </button>
+          );
+        })}
       </div>
     </div>
   );

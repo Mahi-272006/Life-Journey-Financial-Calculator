@@ -2,18 +2,20 @@ import { useState, useMemo } from "react";
 
 const initialState = {
   goalType: "wealth",
-  currentAge: 30,
+  currentAge: 25,
   targetAge: 60,
-  targetAmount: 50000, 
+  targetAmount: 500000,
   monthlyCapacity: 10000,
   expectedReturn: 12,
+
   lifestyle: "comfortable",
+  inflation: 6,
+
   topUpEnabled: false,
   topUpPercent: 10,
-  inflation: 6,
+
   preRetReturn: 12,
-  postRetReturn: 8,
-  retDuration: 20,
+  postRetReturn: 8
 };
 
 export function useCalculator() {
@@ -24,41 +26,38 @@ export function useCalculator() {
   };
 
   const results = useMemo(() => {
-    const {
-      currentAge, targetAge, targetAmount, 
-      topUpEnabled, topUpPercent, inflation, preRetReturn 
-    } = state;
+    const years = state.targetAge - state.currentAge;
+    const monthlyRate = state.expectedReturn / 100 / 12;
 
-    const yearsToGoal = Math.max(1, targetAge - currentAge);
-    const monthsToGoal = yearsToGoal * 12;
-    const preRetMonthlyRate = (preRetReturn / 100) / 12;
+    const inflationAdjustedGoal =
+      state.targetAmount * Math.pow(1 + state.inflation / 100, years);
 
-    // Calculate Future Goal Cost adjusted for inflation
-    const futureGoalCost = targetAmount * Math.pow(1 + inflation / 100, yearsToGoal);
+    let sip = state.monthlyCapacity;
+    let corpus = 0;
 
-    // Binary Search to find exact Required SIP with top-ups
-    let requiredMonthlySIP = 0;
-    let low = 0;
-    let high = futureGoalCost; 
-    
-    for (let i = 0; i < 50; i++) {
-      const mid = (low + high) / 2;
-      let testValue = 0;
-      let testSip = mid;
-      
-      for (let y = 0; y < yearsToGoal; y++) {
-        for (let m = 0; m < 12; m++) {
-          testValue = (testValue + testSip) * (1 + preRetMonthlyRate);
-        }
-        if (topUpEnabled) testSip *= (1 + topUpPercent / 100);
+    const timeline = [];
+
+    for (let y = 0; y < years; y++) {
+      for (let m = 0; m < 12; m++) {
+        corpus = (corpus + sip) * (1 + monthlyRate);
       }
-      
-      if (testValue < futureGoalCost) low = mid;
-      else high = mid;
-      requiredMonthlySIP = mid;
+
+      timeline.push({
+        age: state.currentAge + y + 1,
+        value: corpus,
+      });
+
+      if (state.topUpEnabled) {
+        sip = sip * (1 + state.topUpPercent / 100);
+      }
     }
 
-    return { futureGoalCost, requiredMonthlySIP };
+    return {
+      futureGoalCost: inflationAdjustedGoal,
+      portfolioValue: corpus,
+      requiredMonthlySIP: state.monthlyCapacity,
+      timeline,
+    };
   }, [state]);
 
   return { state, updateState, results };

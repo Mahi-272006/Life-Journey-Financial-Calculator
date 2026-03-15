@@ -15,21 +15,32 @@ export default function CalculatorPage() {
   const { state, updateState, results } = useCalculator();
 
   const handleSave = async () => {
-    try {
-      const response = await fetch('http://localhost:5000/api/sessions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          goalType: state.goalType,
-          targetAmount: results.futureGoalCost,
-          requiredSip: results.requiredMonthlySIP,
-        }),
-      });
-      if (response.ok) alert('✅ Journey saved to database!');
-    } catch (error) {
-      console.error('Database connection error:', error);
+  try {
+    const response = await fetch("http://localhost:5001/api/sessions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...state,
+        futureGoalCost: results.futureGoalCost,
+        requiredSip: results.requiredMonthlySIP,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert("✅ Journey saved successfully!");
+    } else {
+      alert(data.error || "Failed to save journey");
     }
-  };
+
+  } catch (error) {
+    console.error("Backend connection error:", error);
+    alert("⚠️ Cannot connect to backend server");
+  }
+};
 
   return (
     <main className="min-h-screen bg-gray-50 flex flex-col font-verdana">
@@ -46,7 +57,7 @@ export default function CalculatorPage() {
           <div className="w-full bg-gray-100 h-2 mb-8 rounded-full overflow-hidden">
             <div 
               className="bg-[#224c87] h-full transition-all duration-500" 
-              style={{ width: `${(step / 6) * 100}%` }}
+              style={{ width: `${(step / 5) * 100}%` }}
             ></div>
           </div>
 
@@ -113,6 +124,7 @@ export default function CalculatorPage() {
           This tool has been designed for information purposes only. Actual results may vary depending on various factors involved in capital market. Investor should not consider above as a recommendation for any schemes of HDFC Mutual Fund. Past performance may or may not be sustained in future and is not a guarantee of any future returns.
         </div>
       </footer>
+      
     </main>
   );
 }
